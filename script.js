@@ -16,19 +16,19 @@ function suggester(l, u, d, s, str) {
 
     let pos = 0;
 
-    if (l === 0) {
+    if (l === 0 && str.length >= 8) {
         pos = Math.floor(Math.random() * 1000) % str.length;
         str = str.substring(0, pos) + low_case.charAt(Math.floor(Math.random() * 1000) % 26) + str.substring(pos + 1);
     }
-    if (u === 0) {
+    if (u === 0 && str.length >= 8) {
         pos = Math.floor(Math.random() * 1000) % str.length;
         str = str.substring(0, pos) + up_case.charAt(Math.floor(Math.random() * 1000) % 26) + str.substring(pos + 1);
     }
-    if (d === 0) {
+    if (d === 0 && str.length >= 8) {
         pos = Math.floor(Math.random() * 1000) % str.length;
         str = str.substring(0, pos) + num.charAt(Math.floor(Math.random() * 1000) % 10) + str.substring(pos + 1);
     }
-    if (s === 0) {
+    if (s === 0 && str.length >= 8) {
         pos = Math.floor(Math.random() * 1000) % str.length;
         str = str.substring(0, pos) + spl_char.charAt(Math.floor(Math.random() * 1000) % 7) + str.substring(pos + 1);
     }
@@ -71,6 +71,11 @@ function checkPassword() {
         return;
     }
 
+    if (input.length < 8) {
+        feedback.textContent = "Şifreniz en az 8 karakter olmalıdır.";
+        return;
+    }
+
     const status = generate_password(input.length, input);
 
     feedback.textContent = status;
@@ -85,6 +90,21 @@ function checkPassword() {
             const suggestionElement = document.createElement("div");
             suggestionElement.textContent = suggest;
             suggestionElement.classList.add("suggestion");
+
+            // Copy button
+            const copyButton = document.createElement("button");
+            copyButton.textContent = "Kopyala";
+            copyButton.addEventListener("click", function() {
+                navigator.clipboard.writeText(suggest);
+                copyButton.textContent = "Kopyalandı!";
+                copyButton.style.backgroundColor = "#4CAF50"; // Yeşil renk
+                setTimeout(function() {
+                    copyButton.textContent = "Kopyala";
+                    copyButton.style.backgroundColor = ""; // Normal renk
+                }, 2000); // 2 saniye sonra eski haline dönsün
+            });
+            suggestionElement.appendChild(copyButton);
+
             suggestions.appendChild(suggestionElement);
         }
     }
